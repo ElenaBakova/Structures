@@ -4,7 +4,7 @@
 #include <math.h>
 #include <string.h>
 
-void preorder(Node *root, char *path, int length, char *table[256])
+void makePath(Node *root, char *path, int length, char *table[256])
 {
 	if (root->symbol != '\0')
 	{
@@ -15,11 +15,10 @@ void preorder(Node *root, char *path, int length, char *table[256])
 	}
 	path[length] = '0';
 	path[length + 1] = '\0';
-	preorder(root->left, path, length + 1, table);
+	makePath(root->left, path, length + 1, table);
 	path[length] = '1';
 	path[length + 1] = '\0';
-	preorder(root->right, path, length + 1, table);
-
+	makePath(root->right, path, length + 1, table);
 }
 
 int main()
@@ -27,22 +26,22 @@ int main()
 	char string[1000] = "Elena 3.(4 points) Prove that the entropy of a coin is maximum for a fair coin. Bakova";
 	Forest* forest = createForest(string);
 
+	printf("Frequency\n");
 	for (int i = 0; i < forest->size; i++)
 	{
 		Node* node = forest->nodes[i];
-		printf("%c - %i\n", node->symbol, node->frequency);
+		printf("%c - %d\n", node->symbol, node->frequency);
 	}
-	printf("-----------------------\n");
 	Node *root = buildTree(forest);
 	char* table[256] = { 0 };
-	printf("%i\n", root->frequency);
+	//printf("%d\n", root->frequency);
 	char path[256] = { 0 };
-	preorder(root, path, 0, table);
+	makePath(root, path, 0, table);
 	for (int i = 0; i < 256; i++)
 	{
 		if (table[i] != NULL)
 		{
-			printf("%c = %s\n", i, table[i]);
+			printf("\n%c = %s", i, table[i]);
 		}
 	}
 

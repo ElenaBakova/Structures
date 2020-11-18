@@ -21,11 +21,8 @@ Forest* createForest(char string[])
 	int table[256] = { 0 };
 	for (int i = 0; string[i] != '\0'; i++)
 	{
-		unsigned char charCode = (unsigned char)string[i];
-		if (charCode >= 65 && charCode <= 90) {
-			charCode += ' ';
-		}
-		if (charCode >= 97 && charCode <= 122) {
+		unsigned char charCode = (unsigned char)tolower(string[i]);
+		if (isalpha(string[i])) {
 			table[charCode]++;
 		}
 	}
