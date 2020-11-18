@@ -1,4 +1,4 @@
-﻿#include "Project1/Node.h"
+﻿#include "Node.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
