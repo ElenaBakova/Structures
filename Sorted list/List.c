@@ -1,5 +1,6 @@
 #include "List.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
 
 typedef struct ListElement {
@@ -11,37 +12,65 @@ typedef struct List {
 	ListElement* head;
 } List;
 
+Position getFirst(List* list)
+{
+	if (list == NULL)
+	{
+		return NULL;
+	}
+	return list->head;
+}
+
+Position nextItem(Position position)
+{
+	return position->next;
+}
+
+bool isEnd(Position position)
+{
+	return position == NULL;
+}
+
+int getValue(Position position)
+{
+	return position->value;
+}
+
+bool isEmpty(List* list)
+{
+	return (list == NULL || list->head == NULL);
+}
+
 int getTheValue(List *list)
 {
+	if (isEmpty(list))
+	{
+		return -INT_MAX;
+	}
 	return list->head->value;
 }
 
-void nextItem(List* list)
+List* makeList(void)
 {
-	list->head = list->head->next;
-}
-
-List* initListItem(int value)
-{
-	ListElement *listItem = malloc(sizeof(ListElement));
-	if (listItem == NULL) {
-		return NULL;
-	}
-	listItem->value = value;
-	listItem->next = NULL;
-	List* list = malloc(sizeof(List));
-	if (list == NULL) {
-		return NULL;
-	}
-	list->head = listItem;
-	return list;
+	return calloc(1, sizeof(List));
 }
 
 void addItem(List* list, const int value)
 {
+	if (list == NULL)
+	{
+		return;
+	}
 	ListElement* newElement = malloc(sizeof(ListElement));
 	if (newElement == NULL)
 	{
+		return;
+	}
+	newElement->value = value;
+	if (list->head == NULL)
+	{
+		newElement->next = NULL;
+		list->head = newElement;
 		return;
 	}
 	ListElement* pointer = list->head;
@@ -51,20 +80,17 @@ void addItem(List* list, const int value)
 	}
 	if (pointer == list->head && pointer->value > value)
 	{
-		newElement->value = value;
 		newElement->next = list->head;
 		list->head = newElement;
 		return;
 	}
-	newElement->value = value;
 	newElement->next = pointer->next;
 	pointer->next = newElement;
-	return;
 }
 
 bool removeValue(List* list, const int value)
 {
-	if (list->head == NULL)
+	if (isEmpty(list))
 	{
 		return true;
 	}
@@ -72,6 +98,7 @@ bool removeValue(List* list, const int value)
 	if (pointer->value == value)
 	{
 		list->head = list->head->next;
+		free(pointer);
 		return false;
 	}
 	while (pointer->next != NULL && pointer->next->value != value)
@@ -82,19 +109,13 @@ bool removeValue(List* list, const int value)
 	{
 		return true;
 	}
-	ListElement* oldElement = pointer;
-	if (pointer->next != NULL) {
+	if (pointer->next != NULL)
+	{
+		ListElement* oldElement = pointer->next;
 		pointer->next = pointer->next->next;
-	}
-	else {
-		pointer = NULL;
+		free(oldElement);
 	}
 	return false;
-}
-
-bool isEmpty(List* list)
-{
-	return list->head == NULL;
 }
 
 void freeList(List** list)
@@ -103,21 +124,21 @@ void freeList(List** list)
 	{
 		removeValue(*list, (*list)->head->value);
 	}
-	*list = NULL;
 	free(*list);
+	*list = NULL;
 }
 
 void printList(List *list)
 {
-	List listCopy = *list;
-	if (isEmpty(&listCopy))
+	if (isEmpty(list))
 	{
 		printf("List is empty\n");
 		return;
 	}
-	while (!isEmpty(&listCopy))
+	ListElement* pointer = list->head;
+	while (pointer != NULL)
 	{
-		printf("%i ", listCopy.head->value);
-		listCopy.head = listCopy.head->next;
+		printf("%i ", pointer->value);
+		pointer = pointer->next;
 	}
 }

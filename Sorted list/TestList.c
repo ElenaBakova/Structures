@@ -5,27 +5,34 @@
 
 bool testAddItem(void)
 {
-	List *list = initListItem(0);
-	for (int i = 1; i < 5; i++)
-	{
-		addItem(list, i);
-	}
+	List *list = makeList();
+	addItem(list, 2);
+	addItem(list, 4);
+	addItem(list, 1);
+	addItem(list, 0);
+	addItem(list, 5);
+	addItem(list, 3);
+
 	int k = 0;
+	int previous = -1;
 	bool result = true;
-	while (!isEmpty(list))
+	for (Position position = getFirst(list); !isEnd(position); position = nextItem(position))
 	{
-		result &= (getTheValue(list) == k);
-		nextItem(list);
+		int current = getValue(position);
+		result &= (current == k && current > previous);
+		previous = current;
 		k++;
 	}
+
 	freeList(&list);
 	return result;
 }
 
 bool testRemove(void)
 {
-	List* list = initListItem(0);
+	List* list = makeList();
 	addItem(list, 1);
+	addItem(list, 0);
 	addItem(list, -1);
 	addItem(list, 3);
 	addItem(list, 2);
